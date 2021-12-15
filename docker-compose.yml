@@ -1,0 +1,55 @@
+version: '3.5'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8005:80"
+    volumes:
+      - ./docker/nginx/hosts-local:/etc/nginx/conf.d
+      - ./:/var/www
+      - ./logs/nginx/:/var/log/nginx:cached
+    depends_on:
+      - laravel-api
+
+  laravel-api:
+    build:
+      context: ./
+      dockerfile: ./docker/php/Dockerfile
+      args:
+        - USER_ID
+        - GROUP_ID
+    container_name: laravel-api
+    volumes:
+      - ./:/var/www
+      - ./data/composer:/.composer
+      - ./logs/laravel:/var/www/var/logs:cached
+    environment:
+        XDEBUG_CONFIG: client_host=${XDEBUG_CLIENT_HOST} client_port=${XDEBUG_CLIENT_PORT}
+        PHP_IDE_CONFIG: serverName=${XDEBUG_STORM_SERVER_NAME}
+    depends_on:
+      - mongodb
+      - redis
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+      - "6379:6379/udp"
+    environment:
+      REDIS_PASSWORD: redisroot
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "redisroot"]
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    #restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mongoroot
+    volumes:
+      - ./data/mongo:/data/db
+    ports:
+      - "27117:27017"
