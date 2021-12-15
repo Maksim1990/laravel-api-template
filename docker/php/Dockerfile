@@ -1,4 +1,4 @@
-FROM php:8.0.8-fpm-buster
+FROM php:8.1.0-fpm-buster
 
 ARG USER_ID
 ARG GROUP_ID
@@ -24,15 +24,15 @@ RUN apt-get update && apt-get install -y wget \
 
 RUN pecl channel-update pecl.php.net
 
-RUN pecl install redis mongodb
-RUN docker-php-ext-enable redis mongodb
+RUN pecl install redis
+RUN docker-php-ext-enable redis
 RUN docker-php-ext-configure zip
 RUN apt-get install -y libjpeg-dev libfreetype6-dev
-RUN docker-php-ext-install -j$(nproc) bcmath pcntl exif sockets gd
+RUN docker-php-ext-install -j$(nproc) bcmath pcntl exif sockets gd pdo_mysql mysqli
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
-RUN pecl install xdebug-3.0.1 && docker-php-ext-enable xdebug
+RUN pecl install xdebug-3.1.2 && docker-php-ext-enable xdebug
 
 ADD ./docker/php/php.ini /usr/local/etc/php/php.ini
 
