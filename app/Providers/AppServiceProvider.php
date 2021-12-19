@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Services\Auth\AuthManager;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,14 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //AUTHORIZATION TOKEN MANAGER INITIALIZATION
-        $this->app->bind(
-            AuthManager::class, function ($app) {
-            $arrParams = [];
-            $arrParams['env'] = $app->config['app.env'] ?? 'local';
-            return new AuthManager($arrParams);
-        }
-        );
+
     }
 
     /**

@@ -1,0 +1,249 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel Template API",
+        "description": "Laravel Template API documentation",
+        "contact": {
+            "email": "narushevich.maksim@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8005/api/v1",
+            "description": "API documentation"
+        }
+    ],
+    "paths": {
+        "/posts": {
+            "get": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "Get all posts",
+                "description": "Returns all posts details",
+                "operationId": "getPosts",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Current page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Number of items to be retrieved per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
+                    },
+                    {
+                        "name": "relationships",
+                        "in": "query",
+                        "description": "Relationships that should be inclused in response",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "user"
+                    },
+                    {
+                        "name": "relationPerPage",
+                        "in": "query",
+                        "description": "Number of relationships to be retrieved in response structure",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 3
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully received available posts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Authorization token must be provided"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get all users",
+                "description": "Returns all users details",
+                "operationId": "getUsers",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Current page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Number of items to be retrieved per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
+                    },
+                    {
+                        "name": "relationships",
+                        "in": "query",
+                        "description": "Relationships that should be inclused in response",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "posts"
+                    },
+                    {
+                        "name": "relationPerPage",
+                        "in": "query",
+                        "description": "Number of relationships to be retrieved in response structure",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 3
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully received available users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Authorization token must be provided"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Post": {
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "CreatePost": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Post"
+                    },
+                    {
+                        "required": [
+                            "title",
+                            "user_id"
+                        ]
+                    }
+                ]
+            },
+            "User": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateUser": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    {
+                        "required": [
+                            "name",
+                            "email"
+                        ]
+                    }
+                ]
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Oauth2 security",
+                "name": "oauth2",
+                "in": "header",
+                "flows": {
+                    "clientCredentials": {
+                        "tokenUrl": "oauth/token",
+                        "scopes": {}
+                    }
+                },
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
