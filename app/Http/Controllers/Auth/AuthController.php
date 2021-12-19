@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -46,15 +47,13 @@ class AuthController extends Controller
             'password' => bcrypt($request->password)
         ]);
 
-        $token = auth()->claims(['user_id' => $user->_id])->login($user);
-        return $this->respondWithToken($token);
+        return $this->respondWithToken(auth()->login($user));
     }
 
     public function logout(Request $request){
-        $token = $request->user()->token();
-        $token->revoke();
-        $response = ['message' => 'You have been successfully logged out!'];
-        return response($response, 200);
+        $token = $request->bearerToken();
+        JWTAuth::manager()->invalidate(new \Tymon\JWTAuth\Token($token), $forceForever = false);
+        return response()->json(['message' => 'Successfully logged out']);
     }
 
     protected function respondWithToken(string $token)

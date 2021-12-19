@@ -9,6 +9,7 @@ Route::post('login', [AuthController::class,'login'])->name('login');
 Route::post('register', [AuthController::class,'register'])->name('register');
 
 Route::middleware('auth-token')->group(function () {
+    Route::post('logout', [AuthController::class,'logout'])->name('logout');
     Route::resource('users', UserController::class)->except(['edit', 'create']);
     Route::resource('posts', PostController::class)->except(['edit', 'create']);
 });
