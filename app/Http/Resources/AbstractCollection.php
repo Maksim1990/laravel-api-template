@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Mappings\MorphableMapping;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Collection;
@@ -30,24 +29,10 @@ abstract class AbstractCollection extends ResourceCollection
 
                 $resp = ['type' => $this->collectionName, 'id' => $model->id];
 
-                $resp['attributes'] = $this->filterAttributesStructure(
-                    $model->makeHidden(['id'])->toArray()
-                );
+                $resp['attributes'] = $model->makeHidden(['id'])->toArray();
 
                 return $this->processRequestData($resp, $request, $model);
             }
         );
-    }
-
-    private function filterAttributesStructure(array $attributes): array
-    {
-        return collect($attributes)->keyBy(
-            function ($value, $key) {
-                if(in_array($key, MorphableMapping::MORHABLE_FILEDS)) {
-                    return MorphableMapping::MORHABLE_MAPPING_LIST[$key];
-                }
-                return  $key;
-            }
-        )->toArray();
     }
 }

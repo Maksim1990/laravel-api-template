@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Resources\Users;
+namespace App\Http\Resources\Post;
 
 use App\Http\Resources\AbstractResource;
 
-class UserResource extends AbstractResource
+class PostResource extends AbstractResource
 {
     public function toArray($request)
     {
         return $this->buildDataStructure(
             [
                 'id' => $this->id,
-                'email' => $this->email,
-                'created_at' => $this->created_at,
+                'slug' => $this->slug,
+                'title' => $this->title,
+                'description' => $this->description,
                 'updated_at' => $this->updated_at,
             ],
             $request
