@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\CreatePostRequest;
 use App\Http\Resources\AbstractCollection;
 use App\Http\Resources\Post\PostCollection;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PostController extends BaseApiController
@@ -81,9 +83,11 @@ class PostController extends BaseApiController
         );
     }
 
-    public function store(Request $request)
+    public function store(CreatePostRequest $request)
     {
-
+        return response()->json([
+            'data' => Post::create($request->validated())
+        ]);
     }
 
     public function show(Post $post)

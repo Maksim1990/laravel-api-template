@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Requests\CreateUserRequest;
 use App\Http\Resources\AbstractCollection;
 use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
@@ -82,10 +83,13 @@ class UserController extends BaseApiController
         );
     }
 
-    public function store(Request $request)
+    public function store(CreateUserRequest $request)
     {
-        //
+        return response()->json([
+            'data' => User::create($request->validated())
+        ]);
     }
+
 
     public function show(User $user)
     {

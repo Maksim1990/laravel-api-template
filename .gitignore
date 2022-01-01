@@ -12,6 +12,7 @@
 /.idea
 /docs
 .env
+.env.testing
 .env.behat
 .env.backup
 .phpunit.result.cache

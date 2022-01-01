@@ -26,6 +26,10 @@ class AuthToken
 
     private function processUserAuthentication(Request $request): void
     {
+        if (config('system.disable_test_auth_via_token')) {
+            return;
+        }
+
         if (($tokenString = $request->bearerToken()) === null) {
             $this->throwAuthException('Authorization token must be provided');
         }
