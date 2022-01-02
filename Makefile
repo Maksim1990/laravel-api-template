@@ -6,5 +6,7 @@ exec:
 	docker exec -it laravel-api bash
 rebuild-app:
 	docker-compose up -d --build laravel-api
-exec-mongo:
-	docker exec -it mongodb bash
+exec-mysql:
+	docker exec -it mysql bash
+exec-redis:
+	docker exec -it redis bash
