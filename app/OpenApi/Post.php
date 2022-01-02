@@ -18,19 +18,24 @@ class Post
     public $description;
 
     /**
+     * @OA\Property(type="string")
+     */
+    public $slug;
+
+    /**
      * @OA\Property(type="integer")
      */
     public $user_id;
 
 }
 /**
- *  @OA\Schema(
+ * @OA\Schema(
  *   schema="CreatePost",
  *   type="object",
  *   allOf={
  *       @OA\Schema(ref="#/components/schemas/Post"),
  *       @OA\Schema(
- *           required={"title","user_id"}
+ *           required={"title","user_id","slug"}
  *       )
  *   }
  * )

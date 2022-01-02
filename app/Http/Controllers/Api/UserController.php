@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\AbstractCollection;
 use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserController extends BaseApiController
@@ -83,6 +84,30 @@ class UserController extends BaseApiController
         );
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @OA\Post(
+     *      path="/users",
+     *      tags={"User"},
+     *     summary="Create a new user",
+     *     operationId="createUser",
+     *     description="Create a new user.",
+     * @OA\RequestBody(
+     *         description="Create user",
+     *          required=true,
+     * @OA\JsonContent(ref="#/components/schemas/CreateUser")
+     *     ),
+     * @OA\Response(response=201,                               description="User created"),
+     * @OA\Response(response=400,                               description="Request validation error"),
+     * @OA\Response(response=401,                               description="Authorization token must be provided"),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     * @param CreateUserRequest $request
+     * @return JsonResponse
+     */
     public function store(CreateUserRequest $request)
     {
         return response()->json([
@@ -90,19 +115,114 @@ class UserController extends BaseApiController
         ]);
     }
 
-
+    /**
+     * Display the specified resource.
+     *
+     * @param User $user
+     * @return UserResource
+     * @OA\Get(
+     *      path="/users/{id}",
+     *      operationId="getUserById",
+     *      tags={"User"},
+     *      summary="Get a specific user",
+     *      description="Returns user details",
+     * @OA\Parameter(
+     *          name="id",
+     *          description="User's ID",
+     *          required=true,
+     *          in="path",
+     * @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     * @OA\Response(
+     *          response=200,
+     *          description="Successfully received specific user",
+     * @OA\JsonContent(ref="#/components/schemas/User")
+     *       ),
+     * @OA\Response(response=400,                         description="Bad request"),
+     * @OA\Response(response=401,                         description="Authorization token must be provided"),
+     * @OA\Response(response=404,                         description="User Not Found"),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     */
     public function show(User $user)
     {
         return new UserResource($user);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @OA\Patch(
+     *     path="/users/{id}",
+     *     tags={"User"},
+     *     summary="Update a specific user",
+     *     operationId="updateUser",
+     *     description="Update user.",
+     * @OA\Parameter(
+     *          name="id",
+     *          description="User id",
+     *          required=true,
+     *          in="path",
+     * @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     * @OA\RequestBody(
+     *         description="Update user",
+     *          required=true,
+     * @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     * @OA\Response(response=200,                         description="User updated"),
+     * @OA\Response(response=401,                         description="Authorization token must be provided"),
+     * @OA\Response(response=400,                         description="Request validation error"),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     */
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $user->update($request->validated());
+        return response()->json(['data' => $user]);
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @OA\Delete(path="/users/{id}",
+     *   tags={"User"},
+     *   summary="Delete user",
+     *   description="This can only be done by the logged in user.",
+     *   operationId="deleteUser",
+     * @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     description="ID of user to be deleted",
+     *     required=true,
+     * @OA\Schema(
+     *         type="integer"
+     *     )
+     *   ),
+     * @OA\Response(response=200,       description="User deleted"),
+     * @OA\Response(response=400,       description="Invalid ID supplied"),
+     * @OA\Response(response=401,       description="Authorization token must be provided"),
+     * @OA\Response(response=404,       description="User not found"),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     * @param User $user
+     * @return                          JsonResponse
+     */
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+        return response()->json([
+            'message' => sprintf('User with ID %s was deleted', $user->id)
+        ]);
     }
 }

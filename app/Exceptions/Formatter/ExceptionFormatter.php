@@ -4,6 +4,7 @@ namespace App\Exceptions\Formatter;
 
 use App\Exceptions\Formatter\Model\Error;
 use App\Exceptions\Formatter\Model\ErrorInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 use Illuminate\Http\JsonResponse;
@@ -30,8 +31,15 @@ class ExceptionFormatter
             if ($exception instanceof NotFoundHttpException) {
                 $errorCode = HttpResponse::HTTP_NOT_FOUND;
                 $errorMessage = 'Route not found';
-            }elseif ($exception instanceof ValidationException) {
+            } elseif ($exception instanceof ValidationException) {
                 $errorCode = HttpResponse::HTTP_BAD_REQUEST;
+            } elseif ($exception instanceof ModelNotFoundException) {
+                $errorCode = HttpResponse::HTTP_NOT_FOUND;
+                $errorMessage = sprintf(
+                    'Model %s with ID %s not found',
+                    $exception->getModel(),
+                    $exception->getIds()[0] ?? 0
+                );
             } else {
                 $errorCode = HttpResponse::HTTP_INTERNAL_SERVER_ERROR;
             }

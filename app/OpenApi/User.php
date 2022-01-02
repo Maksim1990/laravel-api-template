@@ -17,6 +17,11 @@ class User
      */
     public $email;
 
+    /**
+     * @OA\Property(type="string")
+     */
+    public $password;
+
 }
 /**
  *  @OA\Schema(
@@ -25,7 +30,7 @@ class User
  *   allOf={
  *       @OA\Schema(ref="#/components/schemas/User"),
  *       @OA\Schema(
- *           required={"name","email"}
+ *           required={"name","email","password"}
  *       )
  *   }
  * )
